@@ -39,16 +39,47 @@ export const StateContextProvider = ({ children }) => {
       console.log("contract call failure", error);
     }
   };
-  return(
-    <StateContext.Provider value={{address,
+
+  const getCampaigns = async () => {
+    const campaigns = await contract.call("getCampaigns");
+
+    const parsedCampaigns = campaigns.map((campaign, i) => ({
+      owner: campaign.owner,
+      title: campaign.title,
+      description: campaign.description,
+      target: ethers.utils.formatEther(campaign.target.toString()),
+      deadline: campaign.deadline.toNumber(),
+      amountCollected: ethers.utils.formatEther(
+        campaign.amountCollected.toString()
+      ),
+      image: campaign.image,
+      pId: i,
+    }));
+    return parsedCampaigns;
+  };
+
+    const getUserCampaigns = async () => {
+      const allCampaigns = await getCampaigns();
+
+      const filteredCampaigns = allCampaigns.filter(
+        (campaign) => campaign.owner === address
+      );
+      return filteredCampaigns;
+    };
+ 
+  return (
+    <StateContext.Provider
+      value={{
+        address,
         contract,
         connect,
-        createCampaign:publishCampaign,
-
-    }}>
-        {children}
-
+        createCampaign: publishCampaign,
+        getCampaigns,
+        getUserCampaigns
+      }}
+    >
+      {children}
     </StateContext.Provider>
-  )
+  );
 };
-export const useStateContext =()=>useContext(StateContext);
+export const useStateContext = () => useContext(StateContext);
