@@ -11,7 +11,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0x8C40ceDadb276E466e7B9eD6f545f1cCb223e4c4"
+    "0xAB12c29169F8C2d683C91A926c3808300946A32E"
   );
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
@@ -29,7 +29,7 @@ export const StateContextProvider = ({ children }) => {
           form.title, // title
           form.description, // description
           form.target,
-          new Date(form.deadline).getTime(), // deadline,
+          Math.floor(new Date(form.deadline).getTime() / 1000), // deadline in seconds
           form.image,
         ],
       });
