@@ -1,0 +1,1 @@
+import{O as n,i as r}from"./index-BFJltGNr.js";class a extends n{constructor(s){let{chains:t=r,options:e}=s;super(),this.chains=t,this.options=e}getBlockExplorerUrls(s){const t=s.explorers?.map(e=>e.url)??[];return t.length>0?t:void 0}isChainUnsupported(s){return!this.chains.some(t=>t.chainId===s)}updateChains(s){this.chains=s}}export{a as W};
