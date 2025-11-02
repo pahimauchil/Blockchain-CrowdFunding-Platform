@@ -1,4 +1,4 @@
-import React, { useContext, createContext } from "react";
+import React, { useContext, createContext, useState } from "react";
 import {
   useAddress,
   useContract,
@@ -22,6 +22,7 @@ export const StateContextProvider = ({ children }) => {
   const address = useAddress();
   const connect = useMetamask();
   const disconnect = useDisconnect();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const publishCampaign = async (form) => {
     try {
@@ -126,6 +127,8 @@ export const StateContextProvider = ({ children }) => {
         getUserCampaigns,
         donate,
         getDonations,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}

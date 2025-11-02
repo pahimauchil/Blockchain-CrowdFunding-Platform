@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { CustomButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
@@ -8,27 +8,48 @@ import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
-  const { address, connect } = useStateContext();
+  const { address, connect, searchQuery, setSearchQuery } = useStateContext();
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // If we're not on the home page, navigate to it
+    if (location.pathname !== "/") {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
-      <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-white dark:bg-secondary-dark rounded-[100px] transition-colors duration-200 border border-[#1a8b9d]/20 focus-within:border-[#1a8b9d] shadow-sm">
+      <form
+        onSubmit={handleSearchSubmit}
+        className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-white dark:bg-secondary-dark rounded-[100px] transition-colors duration-200 border border-[#1a8b9d]/20 focus-within:border-[#1a8b9d] shadow-sm"
+      >
         <input
           type="text"
           placeholder="Search for campaigns"
+          value={searchQuery}
+          onChange={handleSearchChange}
           className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#000000]/40 dark:placeholder:text-gray-500 text-[#000000] dark:text-text-dark bg-transparent outline-none transition-colors duration-200"
         />
-        <div className="w-[72px] h-full rounded-[20px] bg-[#1a8b9d] dark:bg-accent-dark flex justify-center items-center cursor-pointer transition-colors duration-200 hover:bg-[#1a8b9d]/90">
+        <button
+          type="submit"
+          className="w-[72px] h-full rounded-[20px] bg-[#1a8b9d] dark:bg-accent-dark flex justify-center items-center cursor-pointer transition-colors duration-200 hover:bg-[#1a8b9d]/90"
+        >
           <img
             src={search}
             alt="search"
             className="w-[15px] h-[15px] object-contain"
           />
-        </div>
-      </div>
+        </button>
+      </form>
 
       <div className="sm:flex hidden flex-row justify-end gap-4 items-center">
         <ThemeToggle />
@@ -74,17 +95,15 @@ const Navbar = () => {
           />
         </div>
         <div
-          className={`absolute top-[60px] right-0 left-0 bg-secondary-light dark:bg-secondary-dark z-10 shadow-secondary dark:shadow-secondary-dark py-4 ${
-            !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0]"
-          } transition-all duration-700`}
+          className={`absolute top-[60px] right-0 left-0 bg-secondary-light dark:bg-secondary-dark z-10 shadow-secondary dark:shadow-secondary-dark py-4 ${!toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0]"
+            } transition-all duration-700`}
         >
           <ul className="mb-4">
             {navlinks.map((Link) => (
               <li
                 key={Link.name}
-                className={`flex p-4 ${
-                  isActive === Link.name && "bg-[#3a3a43]"
-                }`}
+                className={`flex p-4 ${isActive === Link.name && "bg-[#3a3a43]"
+                  }`}
                 onClick={() => {
                   setIsActive(Link.name);
                   setToggleDrawer(false);
@@ -94,16 +113,14 @@ const Navbar = () => {
                 <img
                   src={Link.imgUrl}
                   alt={Link.name}
-                  className={`w-[24px] h-[24px] object-contain ${
-                    isActive === Link.name ? "grayscale-0" : "grayscale"
-                  }`}
+                  className={`w-[24px] h-[24px] object-contain ${isActive === Link.name ? "grayscale-0" : "grayscale"
+                    }`}
                 />
                 <p
-                  className={`ml-[20px] font-epilogue font-semibold text-[14px] ${
-                    isActive === Link.name
+                  className={`ml-[20px] font-epilogue font-semibold text-[14px] ${isActive === Link.name
                       ? "text-[#1dc071]"
                       : "text-[#8080191]"
-                  }`}
+                    }`}
                 >
                   {Link.name}
                 </p>
