@@ -4,25 +4,24 @@ import { CustomButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
 import { useStateContext } from "../context";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  
-  const {address,connect} = useStateContext();
-  
+
+  const { address, connect } = useStateContext();
 
   return (
-    
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
-      <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
+      <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-white dark:bg-secondary-dark rounded-[100px] transition-colors duration-200 border border-[#1a8b9d]/20 focus-within:border-[#1a8b9d] shadow-sm">
         <input
           type="text"
           placeholder="Search for campaigns"
-          className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#4b5264] text-white bg-transparent outline-none"
+          className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#000000]/40 dark:placeholder:text-gray-500 text-[#000000] dark:text-text-dark bg-transparent outline-none transition-colors duration-200"
         />
-        <div className="w-[72px] h-full rounded-[20px] bg-[#4acd8d] flex justify-center items-center cursor-pointer">
+        <div className="w-[72px] h-full rounded-[20px] bg-[#1a8b9d] dark:bg-accent-dark flex justify-center items-center cursor-pointer transition-colors duration-200 hover:bg-[#1a8b9d]/90">
           <img
             src={search}
             alt="search"
@@ -31,18 +30,23 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="sm:flex hidden flex-row justify-end gap-4">
+      <div className="sm:flex hidden flex-row justify-end gap-4 items-center">
+        <ThemeToggle />
         <CustomButton
           btnType="button"
           title={address ? "Create a campaign" : "Connect"}
-          styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
+          styles={
+            address
+              ? "bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
+              : "bg-[#8c6dfd] text-[#fff5f5]"
+          }
           handleClick={() => {
             if (address) navigate("create-campaign");
             else connect();
           }}
         />
         <Link to="./profile">
-          <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+          <div className="w-[52px] h-[52px] rounded-full bg-secondary-light dark:bg-secondary-dark flex justify-center items-center cursor-pointer transition-colors duration-200">
             <img
               src={thirdweb}
               alt="user"
@@ -53,21 +57,26 @@ const Navbar = () => {
       </div>
       {/* Small screen navigation */}
       <div className="sm:hidden flex justify-between items-center relative">
-        <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+        <div className="w-[40px] h-[40px] rounded-[10px] bg-secondary-light dark:bg-secondary-dark flex justify-center items-center cursor-pointer transition-colors duration-200">
           <img
             src={logo}
             alt="user"
             className="w-[60%] h-[60%] object-contain"
           />
         </div>
-        <img
-          src={menu}
-          alt="menu"
-          className="w-[34px] h-[34px] object-contain cursor-pointer"
-          onClick={() => setToggleDrawer((prev) => !prev)}
-        />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <img
+            src={menu}
+            alt="menu"
+            className="w-[34px] h-[34px] object-contain cursor-pointer"
+            onClick={() => setToggleDrawer((prev) => !prev)}
+          />
+        </div>
         <div
-          className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4 ${!toggleDrawer ? '-translate-y-[100vh]' : 'translate-y-0]'} transition-all duration-700`}
+          className={`absolute top-[60px] right-0 left-0 bg-secondary-light dark:bg-secondary-dark z-10 shadow-secondary dark:shadow-secondary-dark py-4 ${
+            !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0]"
+          } transition-all duration-700`}
         >
           <ul className="mb-4">
             {navlinks.map((Link) => (
@@ -105,7 +114,11 @@ const Navbar = () => {
             <CustomButton
               btnType="button"
               title={address ? "Create a campaign" : "Connect"}
-              styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
+              styles={
+                address
+                  ? "bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
+                  : "bg-[#8c6dfd] text-[#fff5f5]"
+              }
               handleClick={() => {
                 if (address) navigate("create-campaign");
                 else connect();

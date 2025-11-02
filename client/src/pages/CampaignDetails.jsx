@@ -7,7 +7,6 @@ import { CustomButton, CountBox, Loader } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { thirdweb } from "../assets";
 
-
 const CampaignDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -42,9 +41,9 @@ const CampaignDetails = () => {
             alt="campaign"
             className="w-full h-[410px] object-cover rounded-xl"
           />
-          <div className="relative w-full h-[5px] bg-[#3a3a43] mt-2">
+          <div className="relative w-full h-[5px] bg-secondary-light dark:bg-secondary-dark mt-2">
             <div
-              className="absolute h-full bg-[#4acdad]"
+              className="absolute h-full bg-accent-primary dark:bg-accent-secondary"
               style={{
                 width: `${calculateBarPercentage(
                   state.target,
@@ -71,7 +70,7 @@ const CampaignDetails = () => {
               Creator
             </h4>
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
-              <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
+              <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-secondary-light dark:bg-secondary-dark cursor-pointer transition-colors duration-200">
                 <img
                   src={thirdweb}
                   alt="user"
@@ -79,10 +78,10 @@ const CampaignDetails = () => {
                 />
               </div>
               <div>
-                <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">
+                <h4 className="font-epilogue font-semibold text-[14px] text-text-light dark:text-text-dark break-all transition-colors duration-200">
                   {state.owner}
                 </h4>
-                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">
+                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-gray-600 dark:text-gray-400 transition-colors duration-200">
                   10 Campaigns
                 </p>
               </div>
@@ -90,11 +89,11 @@ const CampaignDetails = () => {
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[18px] text-text-light dark:text-text-dark uppercase transition-colors duration-200">
               Story
             </h4>
             <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+              <p className="font-epilogue font-normal text-[16px] text-gray-600 dark:text-gray-400 leading-[26px] text-justify transition-colors duration-200">
                 {state.description}
               </p>
             </div>
@@ -111,11 +110,11 @@ const CampaignDetails = () => {
                     key={`${item.donator} - ${index}`}
                     className="flex justify-between items-center gap-4"
                   >
-                    <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">
+                    <p className="font-epilogue font-normal text-[16px] text-text-light dark:text-text-dark leading-[26px] break-ll transition-colors duration-200">
                       {index + 1}. {item.donator}
                     </p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
-                       {item.donation}
+                    <p className="font-epilogue font-normal text-[16px] text-gray-600 dark:text-gray-400 leading-[26px] break-ll transition-colors duration-200">
+                      {item.donation}
                     </p>
                   </div>
                 ))
@@ -131,8 +130,8 @@ const CampaignDetails = () => {
           <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
             Fund
           </h4>
-          <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
-            <p className="font-epilogue font-medium text-[20px] leading-[30px] text-center text-[#808191]">
+          <div className="mt-[20px] flex flex-col p-4 bg-secondary-light dark:bg-secondary-dark rounded-[10px] transition-colors duration-200">
+            <p className="font-epilogue font-medium text-[20px] leading-[30px] text-center text-text-light dark:text-text-dark transition-colors duration-200">
               Fund the Campaign
             </p>
             <div className="mt-[30px]">
@@ -140,15 +139,15 @@ const CampaignDetails = () => {
                 type="number"
                 placeholder="ETH 0.1"
                 step="0.01"
-                className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
+                className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border border-gray-200 dark:border-gray-700 bg-white dark:bg-darkBg font-epilogue text-text-light dark:text-text-dark text-[18px] leading-[30px] placeholder:text-gray-400 dark:placeholder:text-gray-600 rounded-[10px] transition-colors duration-200"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
-              <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
-                <h4 className="font-epilogue font-semibold text-[14px] leading-[22px] text-white ">
+              <div className="my-[20px] p-4 bg-white/50 dark:bg-white/5 backdrop-blur-sm rounded-[10px] transition-colors duration-200">
+                <h4 className="font-epilogue font-semibold text-[14px] leading-[22px] text-text-light dark:text-text-dark transition-colors duration-200">
                   Be part of something meaningful.
                 </h4>
-                <p className="mt-[20px] font-epilogue font-normal leading-[22px] text-[#808191]">
+                <p className="mt-[20px] font-epilogue font-normal leading-[22px] text-gray-600 dark:text-gray-400 transition-colors duration-200">
                   Back campaigns that resonate with you, just because they
                   matter.
                 </p>
@@ -156,7 +155,7 @@ const CampaignDetails = () => {
               <CustomButton
                 btnType="button"
                 title="Fund Campaign"
-                styles="w-full bg-[#8c6dfd]"
+                styles="w-full bg-accent-primary hover:bg-accent-hover-primary dark:bg-accent-secondary dark:hover:bg-accent-hover-secondary transition-colors duration-200"
                 handleClick={handleDonate}
               />
             </div>

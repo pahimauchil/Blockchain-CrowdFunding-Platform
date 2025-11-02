@@ -23,13 +23,19 @@ export const StateContextProvider = ({ children }) => {
 
   const publishCampaign = async (form) => {
     try {
+      // Parse the date string as UTC and set to end of day (23:59:59 UTC)
+      // form.deadline is expected as 'YYYY-MM-DD'
+      const [year, month, day] = form.deadline.split("-").map(Number);
+      // JS months are 0-based, so subtract 1 from month
+      const deadlineDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59));
+      const deadlineInSeconds = Math.floor(deadlineDate.getTime() / 1000);
       const data = await createCampaign({
         args: [
           address, // owner
           form.title, // title
           form.description, // description
           form.target,
-          Math.floor(new Date(form.deadline).getTime() / 1000), // deadline in seconds
+          deadlineInSeconds, // deadline in seconds, end of selected day UTC
           form.image,
         ],
       });
@@ -74,20 +80,20 @@ export const StateContextProvider = ({ children }) => {
     return data;
   };
 
- const getDonations = async (pId) => {
-   const donations = await contract.call("getDonators", [pId]);
-   const numberOfDonations = donations[0].length;
-   const parsedDonations = [];
+  const getDonations = async (pId) => {
+    const donations = await contract.call("getDonators", [pId]);
+    const numberOfDonations = donations[0].length;
+    const parsedDonations = [];
 
-   for (let i = 0; i < numberOfDonations; i++) {
-     parsedDonations.push({
-       donator: donations[0][i],
-       donation: ethers.utils.formatEther(donations[1][i].toString()), 
-     });
-   }
+    for (let i = 0; i < numberOfDonations; i++) {
+      parsedDonations.push({
+        donator: donations[0][i],
+        donation: ethers.utils.formatEther(donations[1][i].toString()),
+      });
+    }
 
-   return parsedDonations;
- };
+    return parsedDonations;
+  };
 
   return (
     <StateContext.Provider

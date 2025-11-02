@@ -19,31 +19,33 @@ const CreateCampaign = () => {
     deadline: "",
     image: "",
   });
-const handleFormFieldChange = (fieldName,e) =>{
-  setForm({...form, [fieldName]: e.target.value})
-}
+  const handleFormFieldChange = (fieldName, e) => {
+    setForm({ ...form, [fieldName]: e.target.value });
+  };
 
-  const handleSubmit = async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    checkIfImage(form.image, async (exists) =>{
-      if(exists){
+    checkIfImage(form.image, async (exists) => {
+      if (exists) {
         setIsLoading(true);
-        await createCampaign({...form,target: ethers.utils.parseUnits(form.target,18)});
+        await createCampaign({
+          ...form,
+          target: ethers.utils.parseUnits(form.target, 18),
+        });
         setIsLoading(false);
-        navigate('/');
-      }else{
-        alert("Provide valid image URL")
-        setForm({...form,image:''});
+        navigate("/");
+      } else {
+        alert("Provide valid image URL");
+        setForm({ ...form, image: "" });
       }
-    })
-
-  }
+    });
+  };
   return (
-    <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
+    <div className="bg-[#fff5f5] dark:bg-[#000000] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4 shadow-md">
       {isLoading && <Loader />}
-      <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
-        <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">
+      <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-white/50 dark:bg-[#1a8b9d]/10 backdrop-blur-sm rounded-[10px] shadow-sm">
+        <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-[#000000] dark:text-[#fff5f5]">
           Start a Campaign
         </h1>
       </div>
@@ -74,13 +76,13 @@ const handleFormFieldChange = (fieldName,e) =>{
           value={form.description}
           handleChange={(e) => handleFormFieldChange("description", e)}
         />
-        <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
+        <div className="w-full flex justify-start items-center p-4 bg-[#1a8b9d] dark:bg-[#1a8b9d] h-[120px] rounded-[10px] shadow-md">
           <img
             src={money}
             alt="money"
             className="w-[40px] h-[40px] object-contain"
           />
-          <h4 className="font-epilogue font-bold text-[25px] text-white ml-[20px]">
+          <h4 className="font-epilogue font-bold text-[25px] text-[#fff5f5] ml-[20px] dark:text-[#fff5f5]">
             You will get 100% of the raised amount
           </h4>
         </div>
@@ -112,7 +114,7 @@ const handleFormFieldChange = (fieldName,e) =>{
           <CustomButton
             btnType="submit"
             title="Submit new campaign"
-            styles="bg-[#1dc071]"
+            styles="bg-[#b2d430] dark:bg-[#b2d430] text-[#000000] hover:bg-[#b2d430]/90 dark:hover:bg-[#b2d430]/90"
           />
         </div>
       </form>
