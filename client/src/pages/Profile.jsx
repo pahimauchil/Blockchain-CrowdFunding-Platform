@@ -20,7 +20,7 @@ const Profile = () => {
   }, [address, contract]);
   
   return <div>
-    <DisplayCampaigns title="All Campaigns"
+    <DisplayCampaigns title="My Campaigns"
     isLoading={isLoading}
     campaigns={campaigns}/>
   </div>;
