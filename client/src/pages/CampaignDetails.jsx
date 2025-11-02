@@ -66,7 +66,7 @@ const CampaignDetails = () => {
       <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
         <div className="flex-[2] flex flex-col gap-[40px]">
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[18px] text-[#1a8b9d] dark:text-[#fff5f5] uppercase">
               Creator
             </h4>
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
@@ -81,7 +81,7 @@ const CampaignDetails = () => {
                 <h4 className="font-epilogue font-semibold text-[14px] text-text-light dark:text-text-dark break-all transition-colors duration-200">
                   {state.owner}
                 </h4>
-                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-gray-600 dark:text-gray-400 transition-colors duration-200">
+                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#000000]/60 dark:text-gray-400 transition-colors duration-200">
                   10 Campaigns
                 </p>
               </div>
@@ -93,14 +93,14 @@ const CampaignDetails = () => {
               Story
             </h4>
             <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-gray-600 dark:text-gray-400 leading-[26px] text-justify transition-colors duration-200">
+              <p className="font-epilogue font-normal text-[16px] text-[#000000]/80 dark:text-gray-400 leading-[26px] text-justify transition-colors duration-200">
                 {state.description}
               </p>
             </div>
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[18px] text-[#1a8b9d] dark:text-[#fff5f5] uppercase">
               Donators
             </h4>
             <div className="mt-[20px] flex flex-col gap-4">
@@ -110,16 +110,16 @@ const CampaignDetails = () => {
                     key={`${item.donator} - ${index}`}
                     className="flex justify-between items-center gap-4"
                   >
-                    <p className="font-epilogue font-normal text-[16px] text-text-light dark:text-text-dark leading-[26px] break-ll transition-colors duration-200">
+                    <p className="font-epilogue font-normal text-[16px] text-[#000000] dark:text-text-dark leading-[26px] break-ll transition-colors duration-200">
                       {index + 1}. {item.donator}
                     </p>
-                    <p className="font-epilogue font-normal text-[16px] text-gray-600 dark:text-gray-400 leading-[26px] break-ll transition-colors duration-200">
+                    <p className="font-epilogue font-normal text-[16px] text-[#1a8b9d] dark:text-gray-400 leading-[26px] break-ll transition-colors duration-200">
                       {item.donation}
                     </p>
                   </div>
                 ))
               ) : (
-                <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                <p className="font-epilogue font-normal text-[16px] text-[#1a8b9d] dark:text-gray-400 leading-[26px] text-justify">
                   No donators yet. Be the first one!
                 </p>
               )}
@@ -127,7 +127,7 @@ const CampaignDetails = () => {
           </div>
         </div>
         <div className="flex-1">
-          <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+          <h4 className="font-epilogue font-semibold text-[18px] text-[#1a8b9d] dark:text-[#fff5f5] uppercase">
             Fund
           </h4>
           <div className="mt-[20px] flex flex-col p-4 bg-secondary-light dark:bg-secondary-dark rounded-[10px] transition-colors duration-200">

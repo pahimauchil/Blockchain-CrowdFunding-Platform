@@ -4,6 +4,7 @@ import {
   useContract,
   useMetamask,
   useContractWrite,
+  useDisconnect,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 
@@ -20,6 +21,7 @@ export const StateContextProvider = ({ children }) => {
 
   const address = useAddress();
   const connect = useMetamask();
+  const disconnect = useDisconnect();
 
   const publishCampaign = async (form) => {
     try {
@@ -95,12 +97,30 @@ export const StateContextProvider = ({ children }) => {
     return parsedDonations;
   };
 
+  // Add logout function
+  const handleLogout = async () => {
+    try {
+      // Disconnect the wallet
+      await disconnect();
+
+      // Clear any localStorage items (if you're storing any user data)
+      // localStorage.removeItem('userPreferences'); // example
+
+      console.log("Logout successful");
+      return true;
+    } catch (error) {
+      console.error("Logout error:", error);
+      return false;
+    }
+  };
+
   return (
     <StateContext.Provider
       value={{
         address,
         contract,
         connect,
+        disconnect: handleLogout,
         createCampaign: publishCampaign,
         getCampaigns,
         getUserCampaigns,
