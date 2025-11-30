@@ -40,3 +40,13 @@ export const checkIfImage = (url, callback) => {
   img.onload = () => callback(true);
   img.onerror = () => callback(false);
 };
+
+export { getRelativeTime } from "./relativeTime";
+export {
+  timestampToDateInput,
+  dateInputToTimestamp,
+  formatDate,
+  isPastDate,
+  normalizeDeadlineSeconds,
+} from "./dateUtils";
+export { getTrustColor } from "./trustScore";

@@ -8,16 +8,24 @@ const Home = () => {
 
   const { address, contract, getCampaigns, searchQuery } = useStateContext();
 
-  const fetchCampaigns = async () => {
-    setIsLoading(true);
-    const data = await getCampaigns();
-    setCampaigns(data);
-    setIsLoading(false);
-  }
-
   useEffect(() => {
-    if (contract) fetchCampaigns();
-  }, [address, contract]);
+    const fetchCampaigns = async () => {
+      try {
+        setIsLoading(true);
+        // getCampaigns can work without wallet connection (browsing mode)
+        const data = await getCampaigns();
+        setCampaigns(data || []);
+      } catch (error) {
+        console.error("Failed to fetch campaigns:", error);
+        setCampaigns([]); // Set empty array on error to prevent undefined
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Fetch campaigns regardless of wallet connection (browsing allowed)
+    fetchCampaigns();
+  }, [getCampaigns]);
 
   // Filter campaigns based on search query
   const filteredCampaigns = useMemo(() => {

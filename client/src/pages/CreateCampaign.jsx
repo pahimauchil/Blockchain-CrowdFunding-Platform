@@ -1,24 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
 import { money } from "../assets";
 import { CustomButton, FormField, Loader } from "../components";
 import { checkIfImage } from "../utils";
-
 import { useStateContext } from "../context";
+import { useNotification } from "../context/NotificationContext";
 
 const CreateCampaign = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { createCampaign } = useStateContext();
-  const [form, setForm] = useState({
+  const { createCampaign, ensureBackendSession } = useStateContext();
+  const { showError, showSuccess } = useNotification();
+  const initialFormState = {
     name: "",
     title: "",
     description: "",
     target: "",
     deadline: "",
     image: "",
-  });
+  };
+  const [form, setForm] = useState(initialFormState);
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
@@ -26,18 +27,33 @@ const CreateCampaign = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    try {
+      await ensureBackendSession();
+    } catch (error) {
+      showError(error.message || "Please reconnect your wallet to continue.");
+      return;
+    }
+
     checkIfImage(form.image, async (exists) => {
-      if (exists) {
-        setIsLoading(true);
-        await createCampaign({
-          ...form,
-          target: ethers.utils.parseUnits(form.target, 18),
-        });
-        setIsLoading(false);
-        navigate("/");
-      } else {
-        alert("Provide valid image URL");
+      if (!exists) {
+        showError("Provide valid image URL");
         setForm({ ...form, image: "" });
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const response = await createCampaign(form);
+        showSuccess(
+          response?.message ||
+            "Campaign submitted for review! Admins will review it shortly."
+        );
+        setForm(initialFormState);
+        navigate("/profile");
+      } catch (error) {
+        showError(error.message || "Failed to submit campaign");
+      } finally {
+        setIsLoading(false);
       }
     });
   };

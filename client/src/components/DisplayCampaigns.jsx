@@ -2,18 +2,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { loader } from "../assets";
 import FundCard from "./FundCard";
+import { normalizeDeadlineSeconds } from "../utils";
 
-const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
+const DisplayCampaigns = ({
+  title,
+  isLoading,
+  campaigns,
+  showStatusBadges = false,
+}) => {
   const navigate = useNavigate();
   const handleNavigate = (campaign) => {
     navigate(`/campaign-details/${campaign.title}`, { state: campaign });
-  };
-  // Helper: normalize a campaign deadline to seconds
-  const normalizeDeadlineSeconds = (dl) => {
-    const n = Number(dl);
-    // if looks like ms (>= 1e12) convert to seconds
-    if (!Number.isFinite(n)) return 0;
-    return n >= 1e12 ? Math.floor(n / 1000) : Math.floor(n);
   };
 
   const now = Math.floor(Date.now() / 1000); // current UTC timestamp in seconds
@@ -57,8 +56,9 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
           activeCampaigns.length > 0 &&
           activeCampaigns.map((campaign) => (
             <FundCard
-              key={campaign.pId}
+              key={campaign.pId || campaign._id}
               {...campaign}
+              showStatus={showStatusBadges}
               handleClick={() => handleNavigate(campaign)}
             />
           ))}
@@ -73,8 +73,9 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
           <div className="flex flex-wrap gap-[26px]">
             {endedCampaigns.map((campaign) => (
               <FundCard
-                key={campaign.pId}
+                key={campaign.pId || campaign._id}
                 {...campaign}
+                showStatus={showStatusBadges}
                 handleClick={() => handleNavigate(campaign)}
               />
             ))}

@@ -4,6 +4,7 @@ import { CustomButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
 import { useStateContext } from "../context";
+import { useNotification } from "../context/NotificationContext";
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
@@ -12,7 +13,55 @@ const Navbar = () => {
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
-  const { address, connect, searchQuery, setSearchQuery } = useStateContext();
+  const {
+    address,
+    connect,
+    searchQuery,
+    setSearchQuery,
+    userRole,
+    userType,
+    authToken,
+    ensureBackendSession,
+  } = useStateContext();
+  const { showError } = useNotification();
+  const allowedLinks = navlinks.filter((link) => {
+    // Filter out admin-only links
+    if (link.requiresAdmin && userRole !== "admin") {
+      return false;
+    }
+    // Filter out campaign link for donors (unless admin)
+    if (link.name === "campaign" && userType === "donor" && userRole !== "admin") {
+      return false;
+    }
+    return true;
+  });
+  const handlePrimaryAction = async () => {
+    if (!address) {
+      try {
+        await connect();
+      } catch (error) {
+        showError(error.message || "Failed to connect wallet. Please try again.");
+      }
+      return;
+    }
+
+    // Check if user is a creator
+    if (userType !== "creator" && userRole !== "admin") {
+      navigate("/creator-signup");
+      return;
+    }
+
+    if (!authToken) {
+      try {
+        await ensureBackendSession();
+      } catch (error) {
+        showError(error.message || "Please reconnect your wallet to continue.");
+        return;
+      }
+    }
+
+    navigate("/create-campaign");
+  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -20,9 +69,9 @@ const Navbar = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // If we're not on the home page, navigate to it
-    if (location.pathname !== "/") {
-      navigate("/");
+    // If we're not on the campaigns page, navigate to it
+    if (location.pathname !== "/campaigns") {
+      navigate("/campaigns");
     }
   };
 
@@ -53,20 +102,18 @@ const Navbar = () => {
 
       <div className="sm:flex hidden flex-row justify-end gap-4 items-center">
         <ThemeToggle />
+        {/* Only show create button for creators/admins, hide connect button after connection */}
+        {address && (userType === "creator" || userRole === "admin") && (
         <CustomButton
           btnType="button"
-          title={address ? "Create a campaign" : "Connect"}
-          styles={
-            address
-              ? "bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
-              : "bg-[#8c6dfd] text-[#fff5f5]"
-          }
-          handleClick={() => {
-            if (address) navigate("create-campaign");
-            else connect();
-          }}
+            title="Create a campaign"
+            styles="bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
+          handleClick={handlePrimaryAction}
         />
-        <Link to="./profile">
+        )}
+        {/* Only show profile link if wallet is connected */}
+        {address && (
+        <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-secondary-light dark:bg-secondary-dark flex justify-center items-center cursor-pointer transition-colors duration-200">
             <img
               src={thirdweb}
@@ -75,6 +122,7 @@ const Navbar = () => {
             />
           </div>
         </Link>
+        )}
       </div>
       {/* Small screen navigation */}
       <div className="sm:hidden flex justify-between items-center relative">
@@ -99,7 +147,7 @@ const Navbar = () => {
             } transition-all duration-700`}
         >
           <ul className="mb-4">
-            {navlinks.map((Link) => (
+            {allowedLinks.map((Link) => (
               <li
                 key={Link.name}
                 className={`flex p-4 ${isActive === Link.name && "bg-[#3a3a43]"
@@ -128,19 +176,15 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex mx-4">
+            {/* Only show create button for creators/admins, hide after connection */}
+            {address && (userType === "creator" || userRole === "admin") && (
             <CustomButton
               btnType="button"
-              title={address ? "Create a campaign" : "Connect"}
-              styles={
-                address
-                  ? "bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
-                  : "bg-[#8c6dfd] text-[#fff5f5]"
-              }
-              handleClick={() => {
-                if (address) navigate("create-campaign");
-                else connect();
-              }}
+                title="Create a campaign"
+                styles="bg-[#1a8b9d] dark:bg-[#1a8b9d] text-[#fff5f5] hover:bg-[#1a8b9d]/90"
+              handleClick={handlePrimaryAction}
             />
+            )}
           </div>
         </div>
       </div>
