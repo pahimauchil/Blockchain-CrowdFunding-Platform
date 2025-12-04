@@ -216,7 +216,7 @@ const CampaignDetails = () => {
 
     setIsLoading(true);
     try {
-      await donate(state.pId, amount);
+      await donate(state.pId, amount, state._id, authToken);
       setAmount("");
       showSuccess("Donation successful! Thank you for your contribution.");
       navigate("/");
@@ -364,8 +364,8 @@ const CampaignDetails = () => {
                 <div className="flex items-center gap-4">
                   <div
                     className={`text-4xl font-bold ${trustScore !== null
-                        ? getTrustColor(trustScore)
-                        : "text-gray-500 dark:text-gray-400"
+                      ? getTrustColor(trustScore)
+                      : "text-gray-500 dark:text-gray-400"
                       }`}
                   >
                     {trustScore !== null ? trustScore : "--"}
@@ -477,8 +477,8 @@ const CampaignDetails = () => {
                 btnType="button"
                 title={canDonate ? "Fund Campaign" : "Not Live Yet"}
                 styles={`w-full transition-colors duration-200 ${canDonate
-                    ? "bg-accent-primary hover:bg-accent-hover-primary dark:bg-accent-secondary dark:hover:bg-accent-hover-secondary"
-                    : "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                  ? "bg-accent-primary hover:bg-accent-hover-primary dark:bg-accent-secondary dark:hover:bg-accent-hover-secondary"
+                  : "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
                   }`}
                 handleClick={canDonate ? handleDonate : undefined}
               />

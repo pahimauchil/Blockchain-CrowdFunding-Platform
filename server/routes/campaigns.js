@@ -1,6 +1,7 @@
 const express = require("express");
 const Campaign = require("../models/Campaign");
 const User = require("../models/User");
+const Donation = require("../models/Donation");
 const { analyzeCampaign } = require("../services/aiService");
 const { authenticateToken } = require("../middleware/auth");
 
@@ -453,6 +454,65 @@ router.post("/:id/publish", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Publish campaign error:", error.message);
     return res.status(500).json({ message: "Failed to publish campaign" });
+  }
+});
+
+// Sync donation from blockchain to database
+router.post("/:id/donations", authenticateToken, async (req, res) => {
+  try {
+    const { transactionHash, amount, onChainCampaignId } = req.body;
+
+    if (!transactionHash || !amount || onChainCampaignId === undefined) {
+      return res.status(400).json({
+        message: "transactionHash, amount, and onChainCampaignId are required",
+      });
+    }
+
+    // Find campaign by MongoDB _id
+    const campaign = await Campaign.findById(req.params.id);
+    if (!campaign) {
+      return res.status(404).json({ message: "Campaign not found" });
+    }
+
+    // Verify the onChainCampaignId matches
+    if (campaign.onChainId !== Number(onChainCampaignId)) {
+      return res.status(400).json({
+        message: "onChainCampaignId does not match campaign's onChainId",
+      });
+    }
+
+    // Check if donation already exists (prevent duplicates)
+    const existingDonation = await Donation.findOne({ transactionHash });
+    if (existingDonation) {
+      return res.status(200).json({
+        message: "Donation already synced",
+        donation: existingDonation,
+      });
+    }
+
+    // Create donation record
+    const donation = await Donation.create({
+      campaignId: campaign._id,
+      donor: req.user.walletAddress.toLowerCase(),
+      amount: String(amount),
+      transactionHash,
+    });
+
+    return res.status(201).json({
+      message: "Donation synced successfully",
+      donation,
+    });
+  } catch (error) {
+    console.error("Sync donation error:", error.message);
+    
+    // Handle duplicate key error (transactionHash unique constraint)
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "Donation with this transaction hash already exists",
+      });
+    }
+
+    return res.status(500).json({ message: "Failed to sync donation" });
   }
 });
 

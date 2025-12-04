@@ -425,15 +425,41 @@ export const StateContextProvider = ({ children }) => {
     }
   };
 
-  const donate = async (pId, amount) => {
+  const donate = async (pId, amount, campaignMongoId, authToken) => {
     if (!contract) {
       throw new Error("Smart contract is not ready yet.");
     }
 
-    const data = await contract.call("donateToCampaign", [pId], {
+    const tx = await contract.call("donateToCampaign", [pId], {
       value: ethers.utils.parseEther(amount),
     });
-    return data;
+
+    // Get transaction hash from the transaction receipt
+    const transactionHash = tx?.receipt?.transactionHash || tx?.hash || null;
+
+    // Sync donation to MongoDB if we have the required info
+    if (transactionHash && campaignMongoId && authToken) {
+      try {
+        await fetch(`${API_URL}/campaigns/${campaignMongoId}/donations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            transactionHash,
+            amount: String(amount),
+            onChainCampaignId: pId,
+          }),
+        });
+        // Don't throw error if sync fails - blockchain transaction succeeded
+      } catch (syncError) {
+        console.warn("Failed to sync donation to database:", syncError);
+        // Continue anyway - blockchain transaction was successful
+      }
+    }
+
+    return { ...tx, transactionHash };
   };
 
   const getDonations = useCallback(
